@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F2F4F6">
+<title>아린 돌잔치 메뉴 고르기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 04 디자인팀 기준: 색 역할 · 글자 단계 · 간격(4/8/12/16/24/32/48) · 모서리(8/12/20) · 카드는 핵심 1개 */
+:root{
+  --primary:#3182F6;--primary-soft:#E8F3FF;--primary-press:#D3E7FF;--bg:#F2F4F6;--surface:#FFFFFF;--muted:#F9FAFB;
+  --text:#191F28;--text2:#4E5968;--text3:#8B95A1;--border:#E5E8EB;--danger:#F04452;--success:#03B26C;--off:#B0B8C1;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--surface);color:var(--text);
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+  font-size:15px;line-height:24px;font-weight:400;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere;padding-bottom:96px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+button,summary,a,select{touch-action:manipulation}
+h1,h2,p,ul{margin:0}
+ul{padding:0;list-style:none}
+[hidden]{display:none!important}
+
+/* 글자 단계 */
+.t-display{font-size:40px;line-height:52px;font-weight:700}
+.t-title1{font-size:26px;line-height:36px;font-weight:700}
+.t-title2{font-size:20px;line-height:30px;font-weight:700}
+.t-title3{font-size:16px;line-height:24px;font-weight:700}
+.t-body1{font-size:17px;line-height:26px;font-weight:400}
+.t-body2{font-size:15px;line-height:24px;font-weight:400}
+.t-label{font-size:14px;line-height:20px;font-weight:600}
+.t-cap{font-size:13px;line-height:18px;font-weight:400}
+.strong{font-weight:600}
+.c2{color:var(--text2)}.c3{color:var(--text3)}.cp{color:var(--primary)}
+.num{font-variant-numeric:tabular-nums}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+
+/* 위쪽 띠 + 핵심 카드 */
+.band{background:var(--bg);padding:8px 0 32px}
+.back{display:inline-flex;align-items:center;min-height:44px;color:var(--primary);text-decoration:none}
+.head{margin:8px 0 24px}
+.head .when{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:4px}
+.badge{display:inline-block;padding:4px 8px;border-radius:8px;background:var(--primary-soft);color:var(--primary);white-space:nowrap}
+.card{background:var(--surface);border-radius:20px;padding:24px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.tile{background:var(--muted);border-radius:12px;padding:12px;min-width:0}
+.tile .v{margin-top:4px}
+.v.ok{color:var(--success)}.v.bad{color:var(--danger)}
+
+main.wrap{padding-top:32px}
+main section{margin-bottom:48px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hint{margin:4px 0 12px}
+
+/* 왼쪽 라벨 + 오른쪽 입력 */
+.row{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;padding:4px 0;border-bottom:1px solid var(--bg)}
+.row .val{text-align:right;min-width:0}
+.field{display:flex;align-items:center;gap:8px}
+.inp{width:144px;height:48px;border:1px solid var(--border);border-radius:12px;padding:0 12px;text-align:right;background:var(--surface);font-size:17px;line-height:26px}
+.inp::placeholder{color:var(--text3)}
+.inp:focus,.qty:focus,select:focus,.copybox:focus{outline:0;border-color:var(--primary);box-shadow:0 0 0 4px rgba(49,130,246,.16)}
+
+/* 종류(접고 펼치기) */
+.cat{border-bottom:1px solid var(--border)}
+.cat:first-child{border-top:1px solid var(--border)}
+.cat>summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:56px;padding:8px 0;cursor:pointer;-webkit-user-select:none;user-select:none}
+.cat>summary::-webkit-details-marker{display:none}
+.cat>summary:focus-visible{outline:2px solid var(--primary);outline-offset:4px;border-radius:8px}
+.cat-name{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.cat-sum{flex:none;text-align:right}
+.chev{flex:none;width:24px;height:24px;color:var(--text3);transition:transform .15s}
+.cat[open] .chev{transform:rotate(180deg)}
+.items{padding-bottom:16px}
+.item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--bg)}
+.info{flex:1;min-width:0}
+.ctl{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.stepper{display:flex;align-items:center;gap:4px}
+.stepper button{width:44px;height:44px;border:0;border-radius:12px;padding:0;background:var(--primary-soft);color:var(--primary);font-size:20px;line-height:1;font-weight:600}
+.stepper button:active{transform:scale(.98);background:var(--primary-press)}
+.stepper button:disabled{background:var(--bg);color:var(--off);cursor:default;transform:none}
+.qty{width:44px;height:44px;border:1px solid var(--border);border-radius:12px;padding:0;background:var(--surface);text-align:center;color:var(--text3);font-size:17px;line-height:26px;font-weight:600}
+.item.on .qty{color:var(--text);border-color:var(--primary)}
+.amt{min-height:18px}
+.sauce{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}
+.sauce select{height:48px;max-width:100%;border:1px solid var(--border);border-radius:12px;padding:0 12px;background:var(--surface)}
+
+/* 고른 메뉴 */
+.empty{padding:16px 0}
+.pk-cat{display:flex;justify-content:space-between;gap:12px;margin-top:16px;padding-bottom:4px}
+.pk-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--bg)}
+.pk-row .l{min-width:0}
+.pk-row .r{flex:none}
+.pk-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.pk-per{display:flex;justify-content:space-between;gap:12px;margin-top:4px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.btn{height:44px;padding:0 16px;border:0;border-radius:12px;font-size:15px;line-height:24px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap}
+.btn.primary{background:var(--primary);color:#fff}
+.btn.ghost{background:transparent;color:var(--text2)}
+.btn.danger{background:transparent;color:var(--danger)}
+.btn:active{transform:scale(.98);filter:brightness(.95)}
+.btn:disabled{background:var(--bg);color:var(--off);cursor:default;transform:none;filter:none}
+.copybox{display:block;width:100%;margin-top:12px;border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--muted);resize:vertical}
+.warn{margin-top:12px;color:var(--danger)}
+.foot{margin-top:-24px}
+
+/* 아래 고정 줄(휴대폰) */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--border);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+.bar-in{max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bar-sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 8px;min-width:0}
+#picked{scroll-margin-top:16px}
+.toast{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);z-index:9;max-width:calc(100% - 32px);background:var(--text);color:#fff;border-radius:12px;padding:12px 16px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+
+@media (min-width:960px){
+  body{padding-bottom:48px}
+  .wrap{padding:0 32px}
+  .band{padding:16px 0 48px}
+  .card{display:flex;align-items:center;gap:48px;padding:32px}
+  .card .sum{flex:1;min-width:0}
+  .tiles{flex:none;width:440px;margin-top:0}
+  main.wrap{padding-top:48px}
+  .grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:48px;align-items:start}
+  .side{position:sticky;top:24px;max-height:calc(100vh - 48px);overflow:auto;padding:0 4px 4px}
+  .bar{display:none}
+  .toast{bottom:32px}
+}
+</style>
+</head>
+<body>
+
+<header class="band">
+  <div class="wrap">
+    <a class="back t-label" href="/">← 채팅으로 돌아가기</a>
+    <div class="head">
+      <p class="t-label c2">아린 돌잔치 · 대구 메리어트 동문</p>
+      <h1 class="t-title1">메뉴 고르기</h1>
+      <p class="when t-body2 c2"><span>2026년 11월 28일(토) 낮 12시</span><span class="badge t-label" id="dday"></span></p>
+    </div>
+    <section class="card" aria-label="지금 합계">
+      <div class="sum" aria-live="polite">
+        <p class="t-label c2">지금 합계</p>
+        <p class="t-display num" id="total">0원</p>
+        <p class="t-body2 c2" id="totalSub">아직 고른 메뉴가 없습니다</p>
+      </div>
+      <div class="tiles">
+        <div class="tile">
+          <p class="t-cap c2">1인당</p>
+          <p class="t-title3 num v" id="perV">—</p>
+          <p class="t-cap c2" id="perN">인원을 넣으면 나옵니다</p>
+        </div>
+        <div class="tile">
+          <p class="t-cap c2">예산 대비</p>
+          <p class="t-title3 num v" id="budV">—</p>
+          <p class="t-cap c2" id="budN">예산을 넣으면 나옵니다</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+    <div class="col">
+      <section aria-labelledby="h-base">
+        <h2 class="t-title2" id="h-base">인원과 예산</h2>
+        <p class="t-cap c2 hint">넣지 않아도 합계는 나옵니다. 넣으면 1인당 금액과 예산 차이가 함께 나옵니다.</p>
+        <div class="row">
+          <label class="t-title3" for="guests">인원</label>
+          <span class="field"><input class="inp num" id="guests" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="0" autocomplete="off"><span class="t-body2 c2">명</span></span>
+        </div>
+        <div class="row">
+          <label class="t-title3" for="budget">예산</label>
+          <span class="field"><input class="inp num" id="budget" type="text" inputmode="numeric" maxlength="11" placeholder="0" autocomplete="off"><span class="t-body2 c2">원</span></span>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-menu">
+        <div class="sec-head">
+          <h2 class="t-title2" id="h-menu">종류별 메뉴</h2>
+          <button type="button" class="btn ghost" id="toggleAll">모두 펼치기</button>
+        </div>
+        <p class="t-cap c2 hint">종류를 누르면 메뉴가 펼쳐집니다. +를 누르거나 숫자(0-999)를 직접 넣으면 합계에 바로 반영됩니다.</p>
+        <div id="cats"></div>
+      </section>
+    </div>
+
+    <aside class="side">
+      <section id="picked" aria-labelledby="h-picked">
+        <h2 class="t-title2" id="h-picked">고른 메뉴</h2>
+        <div id="pickedList"></div>
+        <div class="actions">
+          <button type="button" class="btn primary" id="copy">고른 내용 복사</button>
+          <button type="button" class="btn danger" id="reset">모두 지우기</button>
+        </div>
+        <textarea id="copyBox" class="copybox t-cap" rows="8" readonly hidden aria-label="복사할 내용"></textarea>
+        <p class="t-cap warn" id="saveWarn" role="status" hidden>이 기기에는 고른 내용이 저장되지 않습니다. 화면을 닫기 전에 '고른 내용 복사'로 보관해 주세요.</p>
+      </section>
+
+      <section aria-labelledby="h-day">
+        <h2 class="t-title2" id="h-day">당일 메모</h2>
+        <div class="row"><span class="t-title3">장소</span><span class="val t-body2">대구 메리어트 동문</span></div>
+        <div class="row"><span class="t-title3">시작</span><span class="val t-body2 num">11월 28일(토) 12:00</span></div>
+        <div class="row"><span class="t-title3">도착</span><span class="val t-body2 num">11:00까지</span></div>
+        <div class="row"><span class="t-title3">출발</span><span class="val t-body2 num">9:30</span></div>
+        <div class="row"><span class="t-title3">챙길 것</span><span class="val t-body2">답례떡</span></div>
+      </section>
+
+      <p class="t-cap c2 foot">가격은 2026년 11월 25일에 받은 메뉴판 사진 13장 기준입니다. 수프·밥·면은 1인분 가격입니다. 세금·봉사료 포함 여부와 룸 이용료는 사진에 없어 넣지 않았습니다. 고른 내용은 이 기기에만 저장됩니다.</p>
+    </aside>
+  </div>
+</main>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="bar-sum"><span class="t-label c2">합계</span><span class="t-title2 num" id="barTotal">0원</span><span class="t-cap c2" id="barSub">고른 메뉴 없음</span></div>
+    <a class="btn primary" id="toPicked" href="#picked">고른 메뉴 보기</a>
+  </div>
+</div>
+<div class="toast t-body2" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // 메뉴판 사진 13장(2026-11-25)에서 옮긴 값. n = 이름, d = 설명(메뉴판 영문 설명을 우리말로), p = 가격(원)
+  var SAUCE4 = ['칠리 소스', '마요네즈 소스', '깐풍 소스', '사천 소스'];
+  var MENU = [
+    { id: 'ap', ko: '전채', items: [
+      { id: 'ap1', n: '동문 특선 전채', d: '특선 모둠 냉채', p: 88000 },
+      { id: 'ap2', n: '일품 전복 전채', d: '차게 낸 전복 슬라이스', p: 78000 },
+      { id: 'ap3', n: '오향장육', d: '오향 소고기 냉채', p: 60000 },
+      { id: 'ap4', n: '양장피', d: '찬 요리·더운 요리 모둠, 겨자 소스', p: 55000 },
+      { id: 'ap5', n: '포두부 선새우 전채', d: '포두부·숙주·새우', p: 38000 },
+      { id: 'ap6', n: '광동식 해파리 머리 전채', d: '해파리 냉채', p: 34000 },
+      { id: 'ap7', n: '구수계', d: '닭고기 냉채, 땅콩 고추기름 소스', p: 34000 }
+    ] },
+    { id: 'so', ko: '수프', unit: '1인분', items: [
+      { id: 'so1', n: '고법 불도장', d: '', p: 95000 },
+      { id: 'so2', n: '산라 해물 수프', d: '새콤하고 매운 해물 수프', p: 28000 },
+      { id: 'so3', n: '송이 게살 수프', d: '송이버섯·게살', p: 20000 },
+      { id: 'so4', n: '청채 전복 수프', d: '전복 슬라이스·청경채', p: 20000 },
+      { id: 'so5', n: '게살 수프', d: '', p: 18000 },
+      { id: 'so6', n: '은이 게살 수프', d: '흰목이버섯·게살', p: 18000 }
+    ] },
+    { id: 'sc', ko: '해삼·전복', note: '국내산', items: [
+      { id: 'sc1', n: '해삼 전복', d: '해삼·전복 굴소스 볶음', p: 150000 },
+      { id: 'sc2', n: '오룡 해삼', d: '새우 속을 채운 해삼을 튀겨 조림', p: 130000 },
+      { id: 'sc3', n: 'X.O 소스 해삼', d: 'X.O 소스 해삼 조림', p: 110000 },
+      { id: 'sc4', n: '홍소 해삼', d: '브라운 소스 해삼 조림', p: 110000 },
+      { id: 'sc5', n: '어향 소스 통해삼', d: '어향 소스 해삼 조림', p: 95000 },
+      { id: 'sc6', n: '송이 전복', d: '전복·송이버섯 조림', p: 110000 },
+      { id: 'sc7', n: '아스파라거스 전복', d: '전복·아스파라거스 조림', p: 99000 }
+    ] },
+    { id: 'lf', ko: '활 생선·바닷가재', unit: '한 마리', items: [
+      { id: 'lf1', n: '활 랍스터 찜', d: '소스를 골라 주문', p: 120000, sauces: ['대파 생강 소스', '칠리 소스', '사천 소스'] },
+      { id: 'lf2', n: '활 우럭 찜', d: '간장 소스', p: 75000 },
+      { id: 'lf3', n: '탕수 우럭', d: '탕수 소스', p: 75000 }
+    ] },
+    { id: 'bp', ko: '소고기·돼지고기', items: [
+      { id: 'bp1', n: '송이 우육편', d: '소 안심·송이버섯 굴소스 조림', p: 88000 },
+      { id: 'bp2', n: '난자완스', d: '다진 소고기 완자 굴소스 조림', p: 78000 },
+      { id: 'bp3', n: '흑후추 소고기', d: '흑후추 소스 소고기 볶음', p: 75000 },
+      { id: 'bp4', n: '마라 우육', d: '매운 소스 소고기 볶음', p: 75000 },
+      { id: 'bp5', n: '소고기 고추잡채와 꽃빵', d: '소고기·피망 볶음과 꽃빵', p: 65000 },
+      { id: 'bp6', n: '소고기 양상추 쌈', d: '다진 소고기 볶음과 양상추', p: 65000 },
+      { id: 'bp7', n: '소고기 탕수육', d: '소고기 튀김, 탕수 소스', p: 59000 },
+      { id: 'bp8', n: '동파육', d: '돼지 삼겹살 조림', p: 65000 },
+      { id: 'bp9', n: '등심 탕수육', d: '돼지 등심 튀김, 탕수 소스', p: 39000 }
+    ] },
+    { id: 'dc', ko: '오리·닭', items: [
+      { id: 'dc1', n: '북경 오리', d: '', p: 120000, unit: '한 마리' },
+      { id: 'dc2', n: '라조기', d: '닭고기·야채 볶음, 매운 고추 소스', p: 60000 },
+      { id: 'dc3', n: '유림기', d: '닭튀김·대파, 간장 소스', p: 55000 },
+      { id: 'dc4', n: '레몬 닭고기', d: '닭튀김, 레몬 소스', p: 55000 },
+      { id: 'dc5', n: '깐풍기', d: '닭튀김, 마늘 소스', p: 45000 }
+    ] },
+    { id: 'sf', ko: '해물', items: [
+      { id: 'sf1', n: '전가복', d: '모둠 해물·야채 볶음, 화이트 소스', p: 90000 },
+      { id: 'sf2', n: '해물 누룽지탕', d: '모둠 해물 누룽지탕, 브라운 소스', p: 85000 },
+      { id: 'sf3', n: '송로버섯 관자볶음', d: '관자·송로버섯·아스파라거스, 트러플 소스', p: 78000 },
+      { id: 'sf4', n: '팔보채', d: '모둠 해물·야채 볶음, 매운 기름 소스', p: 75000 },
+      { id: 'sf5', n: '류산슬', d: '해삼·새우·소고기 굴소스 조림', p: 68000 }
+    ] },
+    { id: 'sh', ko: '새우', items: [
+      { id: 'sh1', n: '왕새우 요리', d: '왕새우 튀김, 소스를 골라 주문', p: 75000, unit: '4pcs', sauces: SAUCE4 },
+      { id: 'sh2', n: '중새우 요리', d: '새우 튀김, 소스를 골라 주문', p: 63000, sauces: SAUCE4 },
+      { id: 'sh3', n: '청경채 새우 볶음', d: '청경채·새우·은행 볶음', p: 45000 }
+    ] },
+    { id: 'tv', ko: '두부·야채', items: [
+      { id: 'tv1', n: '아스파라거스 버섯볶음', d: '버섯 3가지·아스파라거스 굴소스 볶음', p: 46000 },
+      { id: 'tv2', n: '홍소가지두부', d: '가지·두부, 브라운 소스', p: 38000 },
+      { id: 'tv3', n: '마파두부', d: '두부·다진 소고기, 칠리 소스', p: 38000 },
+      { id: 'tv4', n: '모듬 야채 볶음', d: '야채 볶음, 화이트 소스', p: 35000 },
+      { id: 'tv5', n: '청경채 굴소스', d: '청경채 굴소스 볶음', p: 35000 }
+    ] },
+    { id: 'ri', ko: '밥', unit: '1인분', items: [
+      { id: 'ri1', n: '새우 볶음밥', d: '', p: 18000 },
+      { id: 'ri2', n: '팔진 볶음밥', d: '모둠 해물 볶음밥', p: 20000 },
+      { id: 'ri3', n: 'X.O 게살 볶음밥', d: '', p: 20000 },
+      { id: 'ri4', n: '서시 볶음밥', d: '천천히 익힌 달걀·건관자·아스파라거스', p: 22000 },
+      { id: 'ri5', n: '마파 두부 덮밥', d: '두부·다진 소고기, 칠리 소스', p: 18000 },
+      { id: 'ri6', n: '류산슬 덮밥', d: '해삼·소고기·새우 덮밥', p: 23000 },
+      { id: 'ri7', n: '송이 덮밥', d: '', p: 23000 },
+      { id: 'ri8', n: '잡탕밥', d: '8가지 진미 덮밥', p: 25000 }
+    ] },
+    { id: 'no', ko: '면', unit: '1인분', items: [
+      { id: 'no1', n: '삼선 자장면', d: '해물 자장면', p: 15000 },
+      { id: 'no2', n: '야채탕면', d: '야채 국물면', p: 17000 },
+      { id: 'no3', n: '사천 자장면', d: '사천식 매운 소스 면', p: 18000 },
+      { id: 'no4', n: '해물 에그누들 볶음면', d: '', p: 18000 },
+      { id: 'no5', n: '삼선 짬뽕', d: '야채·해물 매운 국물면', p: 18000 },
+      { id: 'no6', n: '팔진탕면', d: '모둠 해물·야채 국물면', p: 20000 },
+      { id: 'no7', n: '대하 짬뽕', d: '대하·야채·해물 매운 국물면', p: 23000 },
+      { id: 'no8', n: '팔진초면', d: '모둠 해물·야채 볶음면', p: 25000 },
+      { id: 'no9', n: '팔진특면', d: '해물·야채 면 (메뉴판 영문: Fried Noodle)', p: 25000 }
+    ] },
+    { id: 'ds', ko: '딤섬', items: [
+      { id: 'ds1', n: '단피 춘권', d: '달걀 춘권', p: 45000 },
+      { id: 'ds2', n: '캐비어 쇼마이', d: '', p: 22000 },
+      { id: 'ds3', n: '수정새우 만두', d: '새우 찐만두', p: 20000 },
+      { id: 'ds4', n: '수정송이 만두', d: '송이버섯 찐만두', p: 20000 },
+      { id: 'ds5', n: '차우 쇼우', d: '칠리 소스 완탕', p: 19000 },
+      { id: 'ds6', n: '찐만두', d: '돼지고기 찐만두', p: 15000 },
+      { id: 'ds7', n: '군만두', d: '돼지고기 군만두', p: 15000 }
+    ] },
+    { id: 'de', ko: '디저트', note: '감채', items: [
+      { id: 'de1', n: '계절과일', d: '', p: 22000 },
+      { id: 'de2', n: '망고 푸딩', d: '', p: 18000 },
+      { id: 'de3', n: '코코넛 푸딩', d: '', p: 15000 },
+      { id: 'de4', n: '고구마탕', d: '꿀을 입힌 고구마 튀김', p: 15000 },
+      { id: 'de5', n: '코코넛밀크', d: '', p: 10000 }
+    ] }
+  ];
+  var EVENT = { title: '아린 돌잔치', place: '대구 메리어트 동문', when: '2026-11-28(토) 12:00', y: 2026, m: 10, d: 28 };
+  var NOTE = '※ 메뉴판 사진(2026-11-25) 기준 금액입니다. 세금·봉사료 포함 여부와 룸 이용료는 확인이 필요합니다.';
+  var KEY = 'dolMenu.v1', MAXQ = 999, MAXG = 999, MAXB = 999999999;
+
+  var $ = function (s) { return document.querySelector(s); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var won = function (n) { return n.toLocaleString('ko-KR') + '원'; };
+  var ITEM = Object.create(null);   // 빈 바탕: toString 같은 물려받은 이름이 메뉴로 잡히지 않게
+  MENU.forEach(function (c) { c.items.forEach(function (i) { i.cat = c; ITEM[i.id] = i; }); });
+
+  // ---------- 저장(이 기기) ----------
+  // 저장값은 이 화면이 쓴 모양(1 이상 정수)만 받는다. 그 밖의 값은 고쳐 쓰지 않고 버린다.
+  function isCount(v, max) { return typeof v === 'number' && isFinite(v) && Math.floor(v) === v && v >= 1 && v <= max; }
+  function isObj(o) { return !!o && typeof o === 'object' && !Array.isArray(o); }
+  function load() {
+    var s = { q: {}, s: {}, g: 0, b: 0 };
+    try {
+      var o = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (isObj(o)) {
+        if (isObj(o.q)) Object.keys(o.q).forEach(function (id) { if (ITEM[id] && isCount(o.q[id], MAXQ)) s.q[id] = o.q[id]; });
+        if (isObj(o.s)) Object.keys(o.s).forEach(function (id) { var it = ITEM[id]; if (it && it.sauces && typeof o.s[id] === 'string' && it.sauces.indexOf(o.s[id]) >= 0) s.s[id] = o.s[id]; });
+        if (isCount(o.g, MAXG)) s.g = o.g;
+        if (isCount(o.b, MAXB)) s.b = o.b;
+      }
+    } catch (e) {}
+    return s;
+  }
+  var st = load();
+  var saveOk = true;
+  function setSaveOk(ok) { if (saveOk === ok) return; saveOk = ok; $('#saveWarn').hidden = ok; }   // 저장이 안 되면 화면에 알린다
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); setSaveOk(true); } catch (e) { setSaveOk(false); } }
+  try { localStorage.setItem(KEY + '.probe', '1'); localStorage.removeItem(KEY + '.probe'); } catch (e) { setSaveOk(false); }
+
+  // ---------- 화면 만들기 ----------
+  var CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  var box = $('#cats'), rows = Object.create(null), cats = Object.create(null);
+  function unitOf(i) { return i.unit || i.cat.unit || ''; }
+  function itemHtml(i) {
+    var u = unitOf(i);
+    return '<li class="item" data-id="' + i.id + '">' +
+      '<div class="info">' +
+        '<p class="t-body2 strong">' + esc(i.n) + '</p>' +
+        '<p class="t-body2 num">' + won(i.p) + (u ? ' <span class="t-cap c2">· ' + esc(u) + '</span>' : '') + '</p>' +
+        (i.d ? '<p class="t-cap c2">' + esc(i.d) + '</p>' : '') +
+        (i.sauces ? '<label class="sauce t-cap c2" hidden>소스 <select class="t-body1" aria-label="' + esc(i.n) + ' 소스"><option value="">소스 미정</option>' +
+          i.sauces.map(function (s) { return '<option value="' + esc(s) + '">' + esc(s) + '</option>'; }).join('') + '</select></label>' : '') +
+      '</div>' +
+      '<div class="ctl">' +
+        '<div class="stepper">' +
+          '<button type="button" data-act="minus" aria-label="' + esc(i.n) + ' 수량 줄이기">−</button>' +
+          '<input class="qty num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" value="0" autocomplete="off" aria-label="' + esc(i.n) + ' 수량">' +
+          '<button type="button" data-act="plus" aria-label="' + esc(i.n) + ' 수량 늘리기">+</button>' +
+        '</div>' +
+        '<p class="amt t-cap strong cp num"></p>' +
+      '</div>' +
+    '</li>';
+  }
+  function build() {
+    box.innerHTML = MENU.map(function (c) {
+      return '<details class="cat" data-cat="' + c.id + '">' +
+        '<summary>' +
+          '<span class="cat-name"><span class="t-title3">' + esc(c.ko) + '</span>' +
+            (c.unit || c.note ? '<span class="t-cap c2">' + esc(c.unit || c.note) + '</span>' : '') +
+            '<span class="badge t-label" hidden></span></span>' +
+          '<span class="cat-sum t-body2 num"></span>' + CHEV +
+        '</summary>' +
+        '<ul class="items">' + c.items.map(itemHtml).join('') + '</ul>' +
+      '</details>';
+    }).join('');
+    Array.prototype.forEach.call(box.querySelectorAll('.cat'), function (el) {
+      cats[el.dataset.cat] = { el: el, badge: el.querySelector('.badge'), sum: el.querySelector('.cat-sum') };
+    });
+    Array.prototype.forEach.call(box.querySelectorAll('.item'), function (li) {
+      var b = li.querySelectorAll('.stepper button');
+      rows[li.dataset.id] = { li: li, minus: b[0], plus: b[1], qty: li.querySelector('.qty'), amt: li.querySelector('.amt'), sauce: li.querySelector('.sauce'), sel: li.querySelector('select') };
+    });
+  }
+
+  // ---------- 계산 ----------
+  function totals() {
+    var t = { kinds: 0, qty: 0, sum: 0 };
+    Object.keys(st.q).forEach(function (id) { var n = st.q[id], it = ITEM[id]; if (!it || !n) return; t.kinds++; t.qty += n; t.sum += it.p * n; });
+    return t;
+  }
+  function catTotals(c) {
+    var t = { kinds: 0, sum: 0 };
+    c.items.forEach(function (i) { var n = st.q[i.id] || 0; if (n) { t.kinds++; t.sum += i.p * n; } });
+    return t;
+  }
+  function perText(sum) { var p = sum / st.g; return (p === Math.round(p) ? '' : '약 ') + won(Math.round(p)); }
+  function sauceText(i) { return i.sauces ? ' (' + (st.s[i.id] || '소스 미정') + ')' : ''; }
+
+  // ---------- 그리기 ----------
+  function paintItem(id, typing) {
+    var r = rows[id], n = st.q[id] || 0;
+    r.li.classList.toggle('on', n > 0);
+    if (!typing) r.qty.value = n;
+    r.minus.disabled = n <= 0; r.plus.disabled = n >= MAXQ;
+    r.amt.textContent = n > 0 ? won(ITEM[id].p * n) : '';
+    if (r.sauce) { r.sauce.hidden = n <= 0; r.sel.value = st.s[id] || ''; }
+  }
+  function paintCat(c) {
+    var t = catTotals(c), k = cats[c.id];
+    k.badge.hidden = !t.kinds; k.badge.textContent = t.kinds ? t.kinds + '개 고름' : '';
+    k.sum.textContent = t.kinds ? won(t.sum) : '메뉴 ' + c.items.length + '개';
+    k.sum.classList.toggle('strong', t.kinds > 0); k.sum.classList.toggle('c3', !t.kinds);
+  }
+  function paintPicked(t) {
+    var h = '';
+    if (!t.kinds) h = '<p class="t-body2 c2 empty">아직 고른 메뉴가 없습니다. 종류를 눌러 메뉴를 담아 보세요.</p>';
+    else {
+      MENU.forEach(function (c) {
+        var ps = c.items.filter(function (i) { return st.q[i.id]; }); if (!ps.length) return;
+        h += '<div class="pk-cat"><span class="t-label c2">' + esc(c.ko) + (c.unit ? ' · ' + esc(c.unit) : '') + '</span>' +
+          (ps.length > 1 ? '<span class="t-label c2 num">' + won(catTotals(c).sum) + '</span>' : '') + '</div>';
+        ps.forEach(function (i) {
+          h += '<div class="pk-row"><span class="l t-body2">' + esc(i.n + sauceText(i)) + (i.unit ? ' <span class="t-cap c2">· ' + esc(i.unit) + '</span>' : '') + ' <span class="c2 num">× ' + st.q[i.id] + '</span></span>' +
+            '<span class="r t-body2 num">' + won(i.p * st.q[i.id]) + '</span></div>';
+        });
+      });
+      h += '<div class="pk-total"><span class="t-title3">합계</span><span class="t-title2 num">' + won(t.sum) + '</span></div>';
+      if (st.g) h += '<div class="pk-per"><span class="t-cap c2">1인당 (' + st.g + '명)</span><span class="t-cap c2 num">' + perText(t.sum) + '</span></div>';
+    }
+    $('#pickedList').innerHTML = h;
+    $('#copy').disabled = !t.kinds; $('#reset').disabled = !t.kinds;
+  }
+  function paintTotals() {
+    var t = totals();
+    $('#total').textContent = won(t.sum);
+    $('#totalSub').textContent = t.kinds ? '메뉴 ' + t.kinds + '개 · 수량 ' + t.qty : '아직 고른 메뉴가 없습니다';
+    var pv = $('#perV'), pn = $('#perN');
+    if (st.g && t.sum) { pv.textContent = perText(t.sum); pn.textContent = st.g + '명 기준'; }
+    else { pv.textContent = '—'; pn.textContent = st.g ? st.g + '명 기준 · 메뉴를 고르면 나옵니다' : '인원을 넣으면 나옵니다'; }
+    var bv = $('#budV'), bn = $('#budN'); bv.classList.remove('ok', 'bad');
+    if (st.b) {
+      var d = st.b - t.sum;
+      bv.textContent = d >= 0 ? won(d) + ' 남음' : won(-d) + ' 초과';
+      bv.classList.add(d >= 0 ? 'ok' : 'bad'); bn.textContent = '예산 ' + won(st.b);
+    } else { bv.textContent = '—'; bn.textContent = '예산을 넣으면 나옵니다'; }
+    $('#barTotal').textContent = won(t.sum);
+    $('#barSub').textContent = t.kinds ? '메뉴 ' + t.kinds + '개' : '고른 메뉴 없음';
+    paintPicked(t);
+  }
+  function paintAll() {
+    Object.keys(rows).forEach(function (id) { paintItem(id); });
+    MENU.forEach(paintCat);
+    gEl.value = st.g || ''; bEl.value = st.b ? st.b.toLocaleString('ko-KR') : '';
+    paintTotals();
+  }
+  function setQty(id, n, typing) {
+    n = Math.max(0, Math.min(MAXQ, Math.floor(n) || 0));
+    if (n) st.q[id] = n; else delete st.q[id];
+    save(); paintItem(id, typing); paintCat(ITEM[id].cat); paintTotals();
+  }
+
+  // ---------- 누르기·입력 ----------
+  var itemId = function (el) { var li = el.closest('.item'); return li ? li.dataset.id : ''; };
+  box.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-act]'); if (!b) return;
+    var id = itemId(b), cur = st.q[id] || 0;
+    setQty(id, b.dataset.act === 'plus' ? cur + 1 : cur - 1);
+  });
+  // 숫자가 아닌 글자(1.5, -1 등)는 다른 수량으로 바꿔 받지 않는다. 직전 값으로 되돌리고 알린다.
+  function onQty(el) {
+    var id = itemId(el), v = el.value;
+    if (/\D/.test(v)) { el.value = st.q[id] ? String(st.q[id]) : ''; toast('수량은 0부터 999까지 숫자만 넣을 수 있습니다'); return; }
+    if (v.length > 3) { v = v.slice(0, 3); el.value = v; }
+    setQty(id, v === '' ? 0 : +v, true);
+  }
+  box.addEventListener('input', function (e) { var el = e.target; if (el.classList.contains('qty') && !e.isComposing) onQty(el); });
+  box.addEventListener('compositionend', function (e) { var el = e.target; if (el.classList.contains('qty')) onQty(el); });
+  box.addEventListener('focusin', function (e) { var el = e.target; if (el.classList.contains('qty')) setTimeout(function () { try { el.select(); } catch (err) {} }, 0); });
+  box.addEventListener('focusout', function (e) { var el = e.target; if (el.classList.contains('qty')) el.value = st.q[itemId(el)] || 0; });
+  box.addEventListener('change', function (e) {
+    var el = e.target; if (el.tagName !== 'SELECT') return;
+    var id = itemId(el); if (el.value) st.s[id] = el.value; else delete st.s[id];
+    save(); paintPicked(totals());
+  });
+
+  var gEl = $('#guests'), bEl = $('#budget');
+  function onGuests() {
+    var v = gEl.value;
+    if (/\D/.test(v)) { gEl.value = st.g ? String(st.g) : ''; toast('인원은 숫자만 넣을 수 있습니다'); return; }
+    if (v.length > 3) { v = v.slice(0, 3); gEl.value = v; }
+    st.g = v === '' ? 0 : +v; save(); paintTotals();
+  }
+  function onBudget() {
+    var v = bEl.value;
+    if (/[^\d,]/.test(v)) { bEl.value = st.b ? st.b.toLocaleString('ko-KR') : ''; toast('예산은 숫자만 넣을 수 있습니다'); return; }
+    var d = v.replace(/,/g, '').slice(0, 9);
+    st.b = d === '' ? 0 : +d; bEl.value = st.b ? st.b.toLocaleString('ko-KR') : ''; save(); paintTotals();
+  }
+  gEl.addEventListener('input', function (e) { if (!e.isComposing) onGuests(); });
+  gEl.addEventListener('compositionend', onGuests);
+  gEl.addEventListener('blur', function () { gEl.value = st.g || ''; });
+  bEl.addEventListener('input', function (e) { if (!e.isComposing) onBudget(); });
+  bEl.addEventListener('compositionend', onBudget);
+  $('#toPicked').addEventListener('click', function (e) { e.preventDefault(); $('#picked').scrollIntoView(); });   // 주소(#)를 바꾸지 않아 뒤로 가기 한 번에 채팅으로 돌아간다
+
+  var tAll = $('#toggleAll');
+  function allOpen() { return Array.prototype.every.call(box.querySelectorAll('.cat'), function (d) { return d.open; }); }
+  function syncToggle() { tAll.textContent = allOpen() ? '모두 접기' : '모두 펼치기'; }
+  tAll.addEventListener('click', function () { var o = !allOpen(); Array.prototype.forEach.call(box.querySelectorAll('.cat'), function (d) { d.open = o; }); syncToggle(); });
+  box.addEventListener('toggle', syncToggle, true);   // toggle은 위로 올라오지 않아 잡아서 듣는다
+
+  // ---------- 복사·지우기 ----------
+  var toastT;
+  function toast(m) { var t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove('show'); }, 2600); }
+  function summaryText() {
+    var t = totals(), L = ['[' + EVENT.title + ' 메뉴] ' + EVENT.place, EVENT.when + (st.g ? ' · ' + st.g + '명' : ''), ''];
+    MENU.forEach(function (c) {
+      var ps = c.items.filter(function (i) { return st.q[i.id]; }); if (!ps.length) return;
+      L.push('■ ' + c.ko + (c.unit ? ' (' + c.unit + ')' : ''));
+      ps.forEach(function (i) { L.push('- ' + i.n + sauceText(i) + (i.unit ? ' [' + i.unit + ']' : '') + ' × ' + st.q[i.id] + ' = ' + won(i.p * st.q[i.id])); });
+    });
+    L.push('', '합계 ' + won(t.sum) + (st.g && t.sum ? ' (1인당 ' + perText(t.sum) + ')' : ''), NOTE);
+    return L.join('\n');
+  }
+  function copyDone(ok) {
+    var cb = $('#copyBox');
+    if (ok) { cb.hidden = true; toast('고른 내용을 복사했습니다'); }
+    else { cb.hidden = false; toast('자동 복사가 안 됩니다. 아래 글을 길게 눌러 복사해 주세요'); }
+  }
+  function copyOld(text) {
+    var cb = $('#copyBox'), ok = false;
+    cb.hidden = false; cb.value = text; cb.focus(); cb.select();
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    copyDone(ok);
+  }
+  $('#copy').addEventListener('click', function () {
+    var text = summaryText();
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(function () { copyDone(true); }, function () { copyOld(text); });
+    else copyOld(text);
+  });
+  $('#reset').addEventListener('click', function () {
+    if (!confirm('고른 메뉴를 모두 지울까요? 인원과 예산은 그대로 둡니다.')) return;
+    st.q = {}; st.s = {}; save(); $('#copyBox').hidden = true; paintAll(); toast('고른 메뉴를 모두 지웠습니다');
+  });
+
+  // ---------- 시작 ----------
+  function dday() {
+    var n = new Date(), a = new Date(n.getFullYear(), n.getMonth(), n.getDate()), b = new Date(EVENT.y, EVENT.m, EVENT.d);
+    var d = Math.round((b - a) / 864e5);
+    return d > 0 ? 'D-' + d : d === 0 ? '오늘' : 'D+' + (-d);
+  }
+  build();
+  $('#dday').textContent = dday();
+  paintAll();
+  if (!Object.keys(st.q).length) { var first = box.querySelector('.cat'); if (first) first.open = true; }
+  syncToggle();
+})();
+</script>
+</body>
+</html>
